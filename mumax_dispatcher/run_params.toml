@@ -1,0 +1,8 @@
+nsteps = 4
+Ly = [2E-9, 4E-9]
+overlap = 0.25
+a = 0.5E-9
+Bmax = 0.2
+Bstep = 0.004
+theta = [0.0, 90.0]
+phi = 0.0

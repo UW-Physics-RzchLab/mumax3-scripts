@@ -1,0 +1,8 @@
+nsteps := 4
+Ly := 4e-09
+overlap := 0.25
+a := 5e-10
+Bmax   := 0.2
+Bstep  := 0.004
+Btheta :=  90.0 * pi / 180.0 + Bdelta
+Bphi   :=  0.0 * pi / 180.0 + Bdelta

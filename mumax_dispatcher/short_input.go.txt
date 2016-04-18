@@ -1,0 +1,8 @@
+nsteps := ${nsteps}
+Ly := ${Ly}
+overlap := ${overlap}
+a := ${a}
+Bmax   := ${Bmax}
+Bstep  := ${Bstep}
+Btheta :=  ${theta} * pi / 180.0 + Bdelta
+Bphi   :=  ${phi} * pi / 180.0 + Bdelta
