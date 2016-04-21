@@ -1,0 +1,71 @@
+//output directory: C:\Users\rzchlab\github\mumax3-scripts\mumax_dispatcher\test_output\theta=0.0_Ly=4e-09/
+nsteps := 4
+Lx := 20e-9
+Ly := 4e-09
+overlap := 0.25
+a := 5e-10
+cx := a
+cy := a
+cz := a
+xtrans := Lx
+ytrans := (1 - overlap) * Ly
+print(ytrans)
+//3.0000000000000004e-09
+Lx_total := Lx * nsteps
+Ly_total := Ly + ytrans*(nsteps-1)
+Lz := Lx_total
+Nx := floor(Lx_total / cx)
+Ny := floor(Ly_total / cy)
+Nz := Nx
+print(Lx_total)
+//8e-08
+print(Ly_total)
+//1.3e-08
+print(Nx)
+//160
+print(Ny)
+//26
+print(Nz)
+//160
+SetGridsize(Nx, Ny, Nz)
+SetCellsize(cx, cy, cz)
+xtr0 := -0.5 * (Lx_total - Lx)
+ytr0 := -0.5 * (Ly_total - Ly)
+s := cuboid(Lx, Ly, Lz).Transl(xtr0, ytr0, 0)
+for i := 1; i < nsteps; i++ {
+	xtr := xtr0 + i*xtrans
+	ytr := ytr0 + i*ytrans
+	snew := cuboid(Lx, Ly, Lz).Transl(xtr, ytr, 0)
+	s = s.add(snew)
+}
+setgeom(s.intersect(cylinder(Lx_total, inf).RotX(90 * pi / 180)))
+Msat = 1400e3
+Aex = 18e-12
+Bmax := 0.2
+Bstep := 0.004
+Bdelta := 2 * pi / 180.0
+Btheta := 0.0*pi/180.0 + Bdelta
+Bphi := 0.0*pi/180.0 + Bdelta
+alph1 := sin(Btheta) * cos(Bphi)
+alph2 := sin(Btheta) * sin(Bphi)
+alph3 := cos(Btheta)
+m = uniform(0, 0, 1)
+saveas(B_demag, "B_demag")
+saveas(m, "m")
+MinimizerStop = 1e-6
+TableAdd(B_ext)
+for B := 0.0; B <= Bmax; B += Bstep {
+	B_ext = vector(B*alph1, B*alph2, B*alph3)
+	minimize()
+	tablesave()
+}
+for B := Bmax; B >= -Bmax; B -= Bstep {
+	B_ext = vector(B*alph1, B*alph2, B*alph3)
+	minimize()
+	tablesave()
+}
+for B := -Bmax; B <= Bmax; B += Bstep {
+	B_ext = vector(B*alph1, B*alph2, B*alph3)
+	minimize()
+	tablesave()
+}
