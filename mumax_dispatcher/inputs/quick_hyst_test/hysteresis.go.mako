@@ -1,14 +1,14 @@
-SetGridsize(64, 16, 1)
+SetGridsize(32, 32, 1)
 SetCellsize(4e-9, 4e-9, 30e-9)
 
 Msat  = 800e3
-Aex   = 13e-12
+Aex = ${Aex}
 
-m = Uniform(1, 0, 0)
-//relax()         // high-energy states best minimized by relax()
+m = randomMag()
+relax()         // high-energy states best minimized by relax()
 
 
-Bmax  := ${Bmax}
+Bmax  := 100.0e-3
 Bstep :=  1.0e-3
 MinimizerStop = 1e-6
 TableAdd(B_ext)

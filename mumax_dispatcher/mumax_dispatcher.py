@@ -31,11 +31,20 @@ Options:
     -m --mumax-path=PATH   Path to mumax3.exe command. If not passed, assumes
                            that mumax3.exe is in your $PATH and can be run
                            from anywhere. [default: ]
+    -p --plot-hook=SCRIPT  This option allows a plotting or other post-process
+                           script to be called. mumax_dispatcher will run
+                           this script and give it a single argument: the
+                           output path of the last simulation.
 """
+# TODO
+# - Python object oriented interface?
+# - Finalize hook to send message that run is finished?
+# - Check progress hook? Send updates or give status upon request?
 from mako.template import Template
 from docopt import docopt
 from os.path import join, abspath, exists
 from os import fsync
+from pprint import pprint as pp
 from subprocess import run
 import pytoml as toml
 from copy import deepcopy
@@ -48,7 +57,7 @@ exists_counter = 0
 
 def main():
     args = docopt(__doc__)
-#    print(args)
+    print(args)
 
     print("\nPreparing to run mumax simulations...\n")
 
@@ -61,7 +70,7 @@ def main():
     mumax_path = args['--mumax-path']
     input_path = 'mumax3_input'
 
-    for rp in run_params:
+    for i, rp in enumerate(run_params):
         # Set render the templates
         output_basename = output_template.render(**rp)
         output_path = uniqueify(join(output_dirname, output_basename))
@@ -69,18 +78,20 @@ def main():
         with open(input_path, 'w') as input_file:
             input_file.write(input_file_contents)
             fsync(input_file)
-        print('output_path: ', output_path, '\n')
-        print('Mumax input file contents: ')
-        print('-' * 79)
-        print(input_file_contents)
-        print('-' * 79, '\n')
 
         basecmd = join(mumax_path, 'mumax3.exe')
         opts = '-o {} {}'.format(output_path, input_path)
-        cmd = '{} {}'.format(basecmd, opts)    
+        cmd = '{} {}'.format(basecmd, opts)
 
+        print('\n' + '-' * 79 + '\n')
+        print("SIMULATION %d\n" % i)
+        print('Run Params:')
+        pp(rp)
+        print('\noutput_path: ', output_path, '\n')
         print('Command to be run: ')
         print(cmd, '\n')
+
+        print('Plot hook script: \n{}\n'.format(args['--plot-hook']))
 
         # Run the command
         if do_run:
@@ -88,9 +99,28 @@ def main():
 #            run((basecmd, '--help'))
 #            print(shlex.split(cmd))
             run(cmd)
+            post_run_hook(output_path, args['--plot-hook'])
         else:
-            print('Dry run. No simulations are actually started.')
+            print('Dry run. No simulations have been initiated.\n')
         print('\n')
+
+
+def post_run_hook(output_path, plot_hook_script):
+    if plot_hook_script is not None:
+        cmd = '{} {}'.format(plot_hook_script, output_path)
+        print('Running plot hook cmd: {}\n'.format(cmd))
+        try:
+            exec(cmd)
+        except Exception as e:
+            print('plot hook failed. Tried running:\n{}'.format(cmd))
+            print('Got error:')
+            print(e)
+            print()
+
+def finished_hook():
+    """TODO"""
+    pass
+
 
 
 def build_run_params(run_params_dict, run_params, ind=''):
