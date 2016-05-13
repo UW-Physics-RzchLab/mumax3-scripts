@@ -12,7 +12,7 @@ import re
 # Data parameters
 topdir = 'G:\\mumax3_output\\julian_irwin\\save\\'
 #study_dirname = join(topdir, 'grain_size_and_overlaps_160427')
-study_dirname = join(topdir, 'monotonic_steps_cyl_hyst_vary_miscut_a=0.5nm_160417')
+study_dirname = join(topdir, 'EB_tests_160512')
 sim_dirnames = os.listdir(study_dirname)
 p = '.*xfield.*'
 sim_dirnames = [x for x in sim_dirnames if re.match(p, x)]
@@ -32,7 +32,7 @@ savename = join(topdir, study_dirname, 'plots', 'all_xfield_hyst.png')
 xlabel = 'B (T)'
 ylabel = '$M/M_{Sat}$'
 ylim = 1.1
-xlim = 0.1
+xlim = 0.4
 
 
 def rhat(theta, phi):
@@ -69,7 +69,7 @@ ax.set_xlim(-xlim, xlim)
 ax.set_xlabel(xlabel)
 ax.set_ylabel(ylabel)
 for fname in fnames:
-    add_hyst_plot(ax, fname, start=0.1)
+    add_hyst_plot(ax, fname, start=0.2)
 ax.legend(loc='best', fontsize=10)
 plt.tight_layout()
 # plt.savefig(savename)

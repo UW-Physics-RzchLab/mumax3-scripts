@@ -50,6 +50,8 @@ import pytoml as toml
 from copy import deepcopy
 import re
 import shlex
+import traceback
+import sys
 
 
 exists_counter = 0
@@ -110,11 +112,12 @@ def post_run_hook(output_path, plot_hook_script):
         cmd = '{} {}'.format(plot_hook_script, output_path)
         print('Running plot hook cmd: {}\n'.format(cmd))
         try:
-            exec(cmd)
+            run(cmd)
         except Exception as e:
             print('plot hook failed. Tried running:\n{}'.format(cmd))
-            print('Got error:')
-            print(e)
+            print('-' * 60)
+            traceback.print_exc(file=sys.stdout)
+            print('-' * 60)
             print()
 
 def finished_hook():
