@@ -12,7 +12,7 @@ import re
 # Data parameters
 topdir = 'G:\\mumax3_output\\julian_irwin\\save\\'
 #study_dirname = join(topdir, 'grain_size_and_overlaps_160427')
-study_dirname = join(topdir, 'EB_tests_160512')
+study_dirname = join(topdir, 'EB_tests_160513')
 sim_dirnames = os.listdir(study_dirname)
 p = '.*xfield.*'
 sim_dirnames = [x for x in sim_dirnames if re.match(p, x)]

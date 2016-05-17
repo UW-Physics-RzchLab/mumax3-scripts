@@ -19,12 +19,13 @@
   CoMsat := 800e3
   CoAex := 13e-12
 	K := 450e3
+  grain_exch_scale := ${grain_exch_scale}
 
 // AFM underlayer
   RegionBFO := 255
 	BFOMsat := 800e3
 	BFOAex := 13e-12
-  layer_exch_scale := ${exch_scale}
+  layer_exch_scale := ${layer_exch_scale}
 
 // Applied field
   Bmax   := 400.0e-3
@@ -71,7 +72,7 @@ for i:=0; i<max_region; i++{
 for i:=0; i<max_region; i++{
   ext_ScaleExchange(i, RegionBFO, layer_exch_scale)
 	for j:=i+1; j<max_region; j++{
-		ext_ScaleExchange(i, j, 0.9)
+		ext_ScaleExchange(i, j, grain_exch_scale)
 	}
 }
 
