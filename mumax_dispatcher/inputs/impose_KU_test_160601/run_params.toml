@@ -1,0 +1,3 @@
+layer_exch_scale=0.1
+grain_exch_scale=0.9
+b_phi=[0.0, 45.0, 90.0]

@@ -20,7 +20,8 @@ Arguments:
     OUTPUT_TEMPLATE   A mako template string that will be the name of the
                       output directory for each mumax simulation. If multiple
                       simulations occur, one of the list values should be used
-                      so that the directory names are meaningful.
+                      so that the directory names are meaningful. On windows
+                      you must surround this in SINGLE QUOTES!!!!!
     OUTPUT_DIR        The directory where all of the mumax3 output dirs will
                       go.
 Options:
@@ -82,7 +83,7 @@ def main():
             fsync(input_file)
 
         basecmd = join(mumax_path, 'mumax3.exe')
-        opts = '-o {} {}'.format(output_path, input_path)
+        opts = '-o "{}" "{}"'.format(output_path, input_path)
         cmd = '{} {}'.format(basecmd, opts)
 
         print('\n' + '-' * 79 + '\n')
@@ -101,10 +102,12 @@ def main():
 #            run((basecmd, '--help'))
 #            print(shlex.split(cmd))
             run(cmd)
-            post_run_hook(output_path, args['--plot-hook'])
+            # post_run_hook(output_path, args['--plot-hook'])
         else:
             print('Dry run. No simulations have been initiated.\n')
+            # post_run_hook(output_path, args['--plot-hook'])
         print('\n')
+    post_run_hook(output_path, args['--plot-hook'])
 
 
 def post_run_hook(output_path, plot_hook_script):
@@ -123,8 +126,6 @@ def post_run_hook(output_path, plot_hook_script):
 def finished_hook():
     """TODO"""
     pass
-
-
 
 def build_run_params(run_params_dict, run_params, ind=''):
     run_params_dict = deepcopy(run_params_dict)

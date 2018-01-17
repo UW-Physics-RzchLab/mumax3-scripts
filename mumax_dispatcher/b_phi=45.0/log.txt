@@ -1,0 +1,78 @@
+//output directory: C:\Users\rzchlab\github\mumax3-scripts\mumax_dispatcher\b_phi=45.0/
+N := 128
+a := 4.0e-9
+grain_size := 12e-9
+rand_seed := 18723
+max_region := 254
+CoMsat := 800e3
+CoAex := 13e-12
+K := 450e2
+CoKu1 := 21e3
+CoAnisU := vector(1, 0, 0)
+grain_exch_scale := 0.9
+RegionBFO := 255
+BFOMsat := 800.0e3
+BFOAex := 13e-12
+layer_exch_scale := 0.1
+Bmax := 500.0e-3
+Bstep := 4.0e-3
+Bdelta := 2 * pi / 180.0
+Btheta := 90*pi/180.0 + Bdelta
+Bphi := 45.0*pi/180.0 + Bdelta
+setgridsize(N, N, 2)
+setcellsize(a, a, a)
+setGeom(circle(N * a))
+ext_makegrains(grain_size, max_region, rand_seed)
+defregion(RegionBFO, zrange(-inf, 0))
+frozenspins.setRegion(RegionBFO, 1)
+defregion(254, circle(N*a).inverse())
+for i := 0; i < max_region; i++ {
+	axis1 := vector(randNorm(), randNorm(), randNorm())
+	helper := vector(randNorm(), randNorm(), randNorm())
+	axis2 := axis1.cross(helper)
+	AnisC1.SetRegion(i, axis1)
+	AnisC2.SetRegion(i, axis2)
+	Msat.SetRegion(i, CoMsat)
+	Aex.SetRegion(i, CoAex)
+	m.SetRegion(i, uniform(1, 0, 0))
+	Kc1.SetRegion(i, K+randNorm()*0.1*K)
+	Ku1.SetRegion(i, CoKu1)
+	anisU.SetRegion(i, CoAnisU)
+}
+for i := 0; i < max_region; i++ {
+	ext_ScaleExchange(i, RegionBFO, layer_exch_scale)
+	for j := i + 1; j < max_region; j++ {
+		ext_ScaleExchange(i, j, grain_exch_scale)
+	}
+}
+Msat.SetRegion(RegionBFO, CoMsat)
+Aex.SetRegion(RegionBFO, CoAex)
+m.SetRegion(RegionBFO, uniform(-1, 0, 0))
+saveas(B_demag, "B_demag")
+saveas(m, "m")
+save(regions)
+save(Kc1)
+save(AnisC1)
+save(AnisC2)
+MinimizerStop = 1e-6
+TableAdd(B_ext)
+m_co := CropLayer(m, 1)
+TableAdd(m_Co)
+alph1 := sin(Btheta) * cos(Bphi)
+alph2 := sin(Btheta) * sin(Bphi)
+alph3 := cos(Btheta)
+for B := 0.0; B <= Bmax; B += Bstep {
+	B_ext = vector(B*alph1, B*alph2, B*alph3)
+	minimize()
+	tablesave()
+}
+for B := Bmax; B >= -Bmax; B -= Bstep {
+	B_ext = vector(B*alph1, B*alph2, B*alph3)
+	minimize()
+	tablesave()
+}
+for B := -Bmax; B <= Bmax; B += Bstep {
+	B_ext = vector(B*alph1, B*alph2, B*alph3)
+	minimize()
+	tablesave()
+}

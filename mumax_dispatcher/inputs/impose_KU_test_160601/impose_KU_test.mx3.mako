@@ -11,28 +11,30 @@
   a := 4.0e-9
 
 // Grains
-  grain_size := 20e-9
-  rand_seed := 153464
+  grain_size := 12e-9
+  rand_seed := 18723
   max_region := 254
 
 // Cobalt overlayer
   CoMsat := 800e3
   CoAex := 13e-12
-	K := 450e3
+	K := 450e2
+  CoKu1 := 21e3
+  CoAnisU := vector(1, 0, 0)
   grain_exch_scale := ${grain_exch_scale}
 
 // AFM underlayer
   RegionBFO := 255
-	BFOMsat := 800e3
+	BFOMsat := 800.0e3
 	BFOAex := 13e-12
   layer_exch_scale := ${layer_exch_scale}
 
 // Applied field
-  Bmax   := 1000.0e-3
+  Bmax   := 500.0e-3
   Bstep  :=  4.0e-3
   Bdelta :=  2 * pi / 180.0
   Btheta :=  90 * pi / 180.0 + Bdelta
-  Bphi   :=  0 * pi / 180.0 + Bdelta
+  Bphi   :=  ${b_phi} * pi / 180.0 + Bdelta
 
 
 //--------------------------------------------------------------------------//
@@ -62,10 +64,15 @@ for i:=0; i<max_region; i++{
 	AnisC2.SetRegion(i, axis2)
 	Msat.SetRegion(i, CoMsat)
 	Aex.SetRegion(i, CoAex)
-  m.setRegion(i, uniform(randNorm(), randNorm(), randNorm()))
+  // m.setRegion(i, uniform(randNorm(), randNorm(), randNorm()))
+  m.SetRegion(i, uniform(1, 0, 0))
 
 	// random 10% anisotropy variation
 	Kc1.SetRegion(i, K + randNorm() * 0.1 * K)
+
+  // Every grain has same step edge anisotropy imposed on it
+  Ku1.SetRegion(i, CoKu1)
+  anisU.SetRegion(i, CoAnisU)
 }
 
 // reduce exchange coupling between grains by

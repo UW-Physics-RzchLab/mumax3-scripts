@@ -1,0 +1,15 @@
+gridN=512
+Bmax=0.02
+Bfastup=0.013
+Bfastdn=0.013
+Bstep=0.0002
+Bstep_fast=0.001
+Bdelta=2.0
+Btheta=90.0
+Bphi=45.0
+Ku1=[0.0, 1000.0, 1500.0, 2000.0, 2500.0, 3000.0]
+Kc1=7500.0
+Kc1_varfrac=0.15
+grain_coupling=0.2
+pinmult=275.0
+enable_demag=true

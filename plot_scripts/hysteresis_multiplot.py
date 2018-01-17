@@ -10,11 +10,11 @@ import re
 
 
 # Data parameters
-topdir = 'G:\\mumax3_output\\julian_irwin\\save\\'
+topdir = 'G:\\box\jjirwin\\Box Sync\\mumax3_output\\julian_irwin\\save\\'
 #study_dirname = join(topdir, 'grain_size_and_overlaps_160427')
-study_dirname = join(topdir, 'EB_tests_160513')
+study_dirname = join(topdir, 'impose_Ku_test_160601\\3')
 sim_dirnames = os.listdir(study_dirname)
-p = '.*xfield.*'
+p = '.*'
 sim_dirnames = [x for x in sim_dirnames if re.match(p, x)]
 table_basename = 'table.txt'
 #fnames = [(join(study_dirname, 'xfield_'+x, table_basename),
@@ -22,17 +22,18 @@ table_basename = 'table.txt'
 #           for x in sim_dirnames]
 #fnames = [x for sub in fnames for x in sub]
 fnames = [join(study_dirname, x, table_basename) for x in sim_dirnames]
-mcols = [1, 2, 3]
+# mcols = [1, 2, 3]
+mcols = [7, 8, 9]
 bcols = [4, 5, 6]
 cols = mcols + bcols
 
-savename = join(topdir, study_dirname, 'plots', 'all_xfield_hyst.png')
+savename = join(topdir, study_dirname, 'plots', 'all_hyst.png')
 
 # Plot parameters
 xlabel = 'B (T)'
 ylabel = '$M/M_{Sat}$'
 ylim = 1.1
-xlim = 0.4
+xlim = 1.0
 
 
 def rhat(theta, phi):
@@ -40,6 +41,7 @@ def rhat(theta, phi):
 
 def add_hyst_plot(ax, fname, start=0.0, end=1.0):
     table_dirname = basename(dirname(fname))
+    m = re.search('b_phi=([\d\.]+)', table_dirname)
     if 'xfield' in table_dirname:
         theta = deg2rad(92.0)
         phi = deg2rad(2.0)
@@ -49,6 +51,10 @@ def add_hyst_plot(ax, fname, start=0.0, end=1.0):
     elif 'yfield' in table_dirname:
         theta = deg2rad(92.0)
         phi = deg2rad(92.0)
+    elif m:
+        theta = deg2rad(92.0)
+        phi = deg2rad(float(m.groups()[0]) + 2.0)
+        print(phi)
     else:
         theta = deg2rad(2.0)
         phi = deg2rad(2.0)

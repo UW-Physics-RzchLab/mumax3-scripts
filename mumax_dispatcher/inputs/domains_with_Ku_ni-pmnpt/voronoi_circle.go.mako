@@ -1,4 +1,4 @@
-N := 512
+N := ${gridN}
 c := 10e-9 // was 4e-9
 d := 10e-9 // was 20e-9
 setgridsize(N, N, 1)
@@ -20,10 +20,10 @@ alpha = 1
 Kc1 = 1000
 Aex   = 8.2e-12
 Msat  = 493e3
-enabledemag=True
+enabledemag=${enable_demag}
 
 // Kc1
-K := 7500.0
+K := ${Kc1}
 
 // set random parameters per region
 for i:=0; i<maxRegion; i++{
@@ -35,10 +35,10 @@ for i:=0; i<maxRegion; i++{
 	AnisC2.SetRegion(i, axis2)
 
 	// random 15% anisotropy variation
-	Kc1.SetRegion(i, K + randNorm() * 0.15 * K)
+	Kc1.SetRegion(i, K + randNorm() * ${Kc1_varfrac} * K)
 
   // Set Ku
-  Ku1.SetRegion(i, 3000.0)
+  Ku1.SetRegion(i, ${Ku1})
   anisU.SetRegion(i, vector(1, 0, 0))
 
 
@@ -48,30 +48,30 @@ for i:=0; i<maxRegion; i++{
 // reduce exchange coupling between grains by 20%
 for i:=0; i<maxRegion; i++{
 	for j:=i+1; j<maxRegion; j++{
-		ext_ScaleExchange(i, j, 0.2)
+		ext_ScaleExchange(i, j, ${grain_coupling})
 	}
 }
 
-Kc1.SetRegion(50, K  * 275.0)
-Kc1.SetRegion(100, K * 275.0)
-Kc1.SetRegion(202, K * 275.0)
-Kc1.SetRegion(34, K  * 275.0)
-Kc1.SetRegion(64, K  * 275.0)
-Kc1.SetRegion(51, K  * 275.0)
-Kc1.SetRegion(111, K * 275.0)
-Kc1.SetRegion(212, K * 275.0)
-Kc1.SetRegion(35, K  * 275.0)
-Kc1.SetRegion(65, K  * 275.0)
+Kc1.SetRegion(50, K  * ${pinmult})
+Kc1.SetRegion(100, K * ${pinmult})
+Kc1.SetRegion(202, K * ${pinmult})
+Kc1.SetRegion(34, K  * ${pinmult})
+Kc1.SetRegion(64, K  * ${pinmult})
+Kc1.SetRegion(51, K  * ${pinmult})
+Kc1.SetRegion(111, K * ${pinmult})
+Kc1.SetRegion(212, K * ${pinmult})
+Kc1.SetRegion(35, K  * ${pinmult})
+Kc1.SetRegion(65, K  * ${pinmult})
 
 // Applied field
-  Bmax   :=  0.02
-	Bfastup  := 0.013
-	Bfastdn  := 0.013
-	Bstep_fast := 0.001
-  Bstep  :=  0.0002
-  Bdelta :=  2.0 * pi / 180.0
-  Btheta :=  90.0 * pi / 180.0 + Bdelta
-  Bphi   :=  45.0 * pi / 180.0 + Bdelta
+  Bmax   :=  ${Bmax}
+	Bfastup  := ${Bfastup}
+	Bfastdn  := ${Bfastdn}
+	Bstep_fast := ${Bstep_fast}
+  Bstep  :=  ${Bstep}
+  Bdelta :=  ${Bdelta} * pi / 180.0
+  Btheta :=  ${Btheta} * pi / 180.0 + Bdelta
+  Bphi   :=  ${Bphi} * pi / 180.0 + Bdelta
 
 // Compute field direction
   alph1 := sin(Btheta) * cos(Bphi)

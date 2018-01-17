@@ -47,8 +47,8 @@
 
 // grains and regions
   ext_makegrains(grain_size, max_region, rand_seed)
-  defregion(RegionBFO, zrange(-inf, 0))
-  frozenspins.setRegion(RegionBFO, 1)
+  // defregion(RegionBFO, zrange(-inf, 0))
+  // frozenspins.setRegion(RegionBFO, 1)
   defregion(254, circle(N*a).inverse())
 
 
@@ -70,16 +70,16 @@ for i:=0; i<max_region; i++{
 
 // reduce exchange coupling between grains by
 for i:=0; i<max_region; i++{
-  ext_ScaleExchange(i, RegionBFO, layer_exch_scale)
+  // ext_ScaleExchange(i, RegionBFO, layer_exch_scale)
 	for j:=i+1; j<max_region; j++{
 		ext_ScaleExchange(i, j, grain_exch_scale)
 	}
 }
 
 // AFM substrate
-  Msat.SetRegion(RegionBFO, CoMsat)
-  Aex.SetRegion(RegionBFO, CoAex)
-  m.SetRegion(RegionBFO, uniform(-1, 0, 0))
+  // Msat.SetRegion(RegionBFO, CoMsat)
+  // Aex.SetRegion(RegionBFO, CoAex)
+  // m.SetRegion(RegionBFO, uniform(-1, 0, 0))
 
 
 // output
@@ -94,8 +94,8 @@ for i:=0; i<max_region; i++{
   TableAdd(B_ext)
     // Table already has m of whole universe, but that includes frozen spins  .
   // m_Co := m.region(RegionCo)
-  m_co := CropLayer(m, 1)
-  TableAdd(m_Co)
+  // m_co := CropLayer(m, 1)
+  // TableAdd(m_Co)
 
 // Compute field direction
   alph1 := sin(Btheta) * cos(Bphi)
